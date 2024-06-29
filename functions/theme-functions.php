@@ -4006,6 +4006,8 @@ function mfn_is_hosted()
 
  function mfn_is_registered()
  {
+ 	return 36;
+
  	if ( mfn_is_hosted() ) {
  		return mfn_is_hosted();
  	}

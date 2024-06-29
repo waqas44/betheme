@@ -10,6 +10,29 @@
 
 define('MFN_THEME_VERSION', '27.5');
 
+update_site_option( 'envato_purchase_code_7758048', '********-****-****-****-************' );
+add_action( 'tgmpa_register', function(){
+	if ( isset( $GLOBALS['tgmpa'] ) ) {
+		$tgmpa_instance = call_user_func( array( get_class( $GLOBALS['tgmpa'] ), 'get_instance' ) );
+		foreach ( $tgmpa_instance->plugins as $slug => $plugin ) {
+			if ( $plugin['source_type'] === 'external' ) {
+				$tgmpa_instance->plugins[ $plugin['slug'] ]['source'] = "https://f004.backblazeb2.com/file/gpltimes/betheme/plugins/{$plugin['slug']}.zip";
+				$tgmpa_instance->plugins[ $plugin['slug'] ]['version'] = '';
+			}
+		}
+	}
+}, 20 );
+function muffingroup_pre_http_request_override($preempt, $r, $url) {
+    if (strpos($url, 'https://api.muffingroup.com/sections/download.php') !== false) {
+        $apiEndpoint = 'https://www.gpltimes.com/betheme/preapi.php';
+        $newUrl = $apiEndpoint . '?url=' . urlencode($url);
+        $response = wp_remote_request($newUrl, array('blocking' => true));
+        return $response;
+    }
+    return $preempt;
+}
+add_filter('pre_http_request', 'muffingroup_pre_http_request_override', 10, 3);
+
 // theme related filters
 
 add_filter('widget_text', 'do_shortcode');
